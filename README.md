@@ -29,6 +29,10 @@ Run the following commands from the root of the project:
 | `npm run build`   | Builds the production site to `./dist/`          |
 | `npm run preview` | Previews the build locally before deployment     |
 
+## 🚀 Deployment
+
+This project uses GitHub Actions to deploy to Cloudflare Pages. The deployment workflow is triggered on every push to the `main` branch.
+
 ## 📖 Learn More
 
 - [Astro Documentation](https://docs.astro.build)
