@@ -1,11 +1,223 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import logo from '../assets/logo-circle.png';
+import hero from '../assets/hero.png';
 ---
 
+<style>
+	body {
+		background-color: #060a13;
+		color: #fff;
+		font-family: 'Roboto', sans-serif;
+		margin: 20;
+		padding: 20;
+	}
+
+	.top-bar {
+		top: 0;
+		left: 0;
+		width: 96%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 10px 20px;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+		z-index: 1000;
+	}
+
+	.top-bar img {
+		width: 126px;
+		height: 126px;
+	}
+
+	.top-bar button {
+		background-color: #d75e91;
+		color: #060a13;
+		border: none;
+		padding: 8px 16px;
+		border-radius: 50px;
+		cursor: pointer;
+		font-size: 0.9rem;
+		font-weight: bold;
+		transition: background-color 0.3s ease;
+	}
+
+	.top-bar button:hover {
+		background-color: #f9c07d;
+	}
+
+	section {
+		padding: 40px 20px;
+		text-align: center;
+		margin-top: 80px;
+	}
+
+	h1, h2 {
+		color: #f9c07d;
+		margin-bottom: 20px;
+	}
+
+	p {
+		line-height: 1.8;
+		font-size: 1.1rem;
+		margin: 10px 0;
+	}
+
+	a {
+		color: #f9c07d;
+		text-decoration: none;
+		font-weight: bold;
+		font-size: 1.1rem;
+	}
+
+	a:hover {
+		text-decoration: underline;
+	}
+
+	.hero {
+		padding: 20px 20px;
+		display: flex;
+		align-items: flex-start;
+		justify-content: flex-start;
+		gap: 20px;
+		flex-direction: row;
+		max-width: 900px;
+		margin: 30px auto 0;
+	}
+
+	.hero div {
+		height: 300px;
+		display: flex;
+		align-items: left;
+		justify-content: left;
+		color: #fff;
+		font-size: 1.5rem;
+	}
+
+	.hero-content {
+		text-align: left;
+		color: #fff;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		align-items: flex-start;
+	}
+
+	.hero-content h1 {
+		color: #f9c07d;
+		margin-bottom: 20px;
+	}
+
+	.hero-content p {
+		line-height: 1.8;
+		font-size: 1.1rem;
+		margin: 10px 0;
+	}
+
+	.hero img {
+		width: 500px;
+		height: 359px;
+	}
+
+	button {
+		background-color: #d75e91;
+		color: #060a13;
+		border: none;
+		padding: 12px 24px;
+		border-radius: 50px;
+		cursor: pointer;
+		font-size: 1rem;
+		transition: background-color 0.3s ease;
+		margin-top: 20px;
+	}
+
+	button:hover {
+		background-color: #f9c07d;
+	}
+
+	.social-buttons {
+		display: flex;
+		gap: 15px;
+		justify-content: center;
+		margin-top: 20px;
+	}
+
+	section + section {
+		margin-top: 100px;
+	}
+
+	.container {
+		max-width: 1000px;
+		margin: 0 auto;
+		padding: 0 20px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		min-height: 100vh;
+	}
+
+	@media (max-width: 768px) {
+		.hero {
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.hero img {
+			width: 100%;
+			height: auto;
+		}
+
+		.hero-content {
+			text-align: center;
+			align-items: center;
+		}
+	}
+</style>
+
 <Layout>
-	<Welcome />
+	<div class="top-bar">
+		<img src={logo.src} alt="Reely Logo" />
+		<button onclick="window.location.href='https://groups.google.com/g/reely-beta-testers'">
+			Request Early Access
+		</button>
+	</div>
+	<div class="container">
+
+		<section class="hero">
+			<div class="hero-content">
+				<h1>Reely</h1>
+				<div>
+					<p>
+						Reely is a mobile-first platform for asynchronous video conversations that’s like Snapchat and TikTok had a baby. 
+						Imagine TikTok, but for having convos with your friends, fam, and whoever else you want to vibe with.
+					</p>
+				</div>
+			</div>
+			<div>
+				<p><img src={hero.src} alt="Reely Hero" /></p>
+			</div>
+		</section>
+
+		<section>
+			<h2>Early Access</h2>
+			<p>
+				Reely is currently in Early Access! Be one of the first to try it out by requesting to join our beta testing group.
+			</p>
+			<div>
+				<button onclick="window.location.href='https://groups.google.com/g/reely-beta-testers'">
+					<strong>Request Early Access</strong>
+				</button>
+			</div>
+		</section>
+
+		<!-- <section>
+			<h2>Follow Us</h2>
+			<div class="social-buttons">
+				<button>Facebook</button>
+				<button>Twitter</button>
+				<button>Instagram</button>
+				<button>LinkedIn</button>
+			</div>
+		</section> -->
+	</div>
 </Layout>
