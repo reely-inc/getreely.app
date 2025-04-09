@@ -209,7 +209,7 @@ import EarlyAccessButton from '../components/EarlyAccessButton.jsx';
 <Layout>
 	<div class="top-bar">
 		<Image src={logo} alt="Reely Logo" width={126} height={126} loading="eager" />
-		<EarlyAccessButton client:load />
+		<EarlyAccessButton client:only="react" />
 	</div>
 	<div class="container">
 
@@ -233,7 +233,7 @@ import EarlyAccessButton from '../components/EarlyAccessButton.jsx';
 				Reely is currently in Early Access! Be one of the first to try it out by requesting to join our beta testing group.
 			</p>
 			<div>
-				<EarlyAccessButton client:load />
+				<EarlyAccessButton client:only="react" />
 			</div>
 		</section>
 
