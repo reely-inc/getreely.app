@@ -2,20 +2,22 @@
 import Layout from '../layouts/Layout.astro';
 import logo from '../assets/logo-circle.png';
 import hero from '../assets/hero.png';
+import { Image } from 'astro:assets';
+import EarlyAccessButton from '../components/EarlyAccessButton.jsx';
 ---
 
 <head>
-	<title>Reely App - Asynchronous Video Conversations</title>
+	<title>Reely App - Async Video Chat</title>
 	<meta name="description" content="Reely App is a mobile-first platform for asynchronous video conversations. Join our beta testing group and experience the future of video communication.">
 	<meta name="keywords" content="Reely App, asynchronous video, video conversations, mobile-first platform, beta testing, TikTok alternative, Snapchat alternative">
 	<meta name="author" content="Reely App Team">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta property="og:title" content="Reely App - Asynchronous Video Conversations">
+	<meta property="og:title" content="Reely App - Async Video Chat">
 	<meta property="og:description" content="Reely App is a mobile-first platform for asynchronous video conversations. Join our beta testing group and experience the future of video communication.">
 	<meta property="og:image" content={hero.src}>
 	<meta property="og:url" content="https://getreely.app">
 	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:title" content="Reely App - Asynchronous Video Conversations">
+	<meta name="twitter:title" content="Reely App - Async Video Chat">
 	<meta name="twitter:description" content="Reely App is a mobile-first platform for asynchronous video conversations. Join our beta testing group and experience the future of video communication.">
 	<meta name="twitter:image" content={hero.src}>
 </head>
@@ -26,7 +28,8 @@ import hero from '../assets/hero.png';
 		color: #fff;
 		font-family: 'Roboto', sans-serif;
 		margin: 20;
-		padding: 20;
+		padding: 20px;
+		box-sizing: border-box;
 	}
 
 	.top-bar {
@@ -46,26 +49,13 @@ import hero from '../assets/hero.png';
 		height: 126px;
 	}
 
-	.top-bar button {
-		background-color: #d75e91;
-		color: #060a13;
-		border: none;
-		padding: 8px 16px;
-		border-radius: 50px;
-		cursor: pointer;
-		font-size: 0.9rem;
-		font-weight: bold;
-		transition: background-color 0.3s ease;
-	}
-
-	.top-bar button:hover {
-		background-color: #f9c07d;
-	}
-
 	section {
-		padding: 40px 20px;
 		text-align: center;
-		margin-top: 80px;
+		margin-bottom: 0px;
+	}
+
+	section + section {
+		margin-top: 60px;
 	}
 
 	h1, h2 {
@@ -91,18 +81,19 @@ import hero from '../assets/hero.png';
 	}
 
 	.hero {
-		padding: 20px 20px;
 		display: flex;
-		align-items: flex-start;
+		align-items: center;
 		justify-content: flex-start;
 		gap: 20px;
 		flex-direction: row;
 		max-width: 900px;
 		margin: 30px auto 0;
+		width: 100%;
+		margin-bottom: 60px;
 	}
 
 	.hero div {
-		height: 300px;
+		/* height: 300px; */
 		display: flex;
 		align-items: left;
 		justify-content: left;
@@ -135,41 +126,22 @@ import hero from '../assets/hero.png';
 		height: 359px;
 	}
 
-	button {
-		background-color: #d75e91;
-		color: #060a13;
-		border: none;
-		padding: 12px 24px;
-		border-radius: 50px;
-		cursor: pointer;
-		font-size: 1rem;
-		transition: background-color 0.3s ease;
-		margin-top: 20px;
-	}
-
-	button:hover {
-		background-color: #f9c07d;
-	}
-
-	.social-buttons {
-		display: flex;
-		gap: 15px;
-		justify-content: center;
-		margin-top: 20px;
-	}
-
-	section + section {
-		margin-top: 100px;
+	.container .early-access {
+		margin-top: 0px;
 	}
 
 	.container {
 		max-width: 1000px;
 		margin: 0 auto;
-		padding: 0 20px;
+		padding: 0;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		min-height: 100vh;
+		width: 100%;
+		box-sizing: border-box;
+		text-align: center;
+		align-items: center;
 	}
 
 	@media (max-width: 768px) {
@@ -205,12 +177,6 @@ import hero from '../assets/hero.png';
 			height: 80px;
 		}
 
-		.top-bar button {
-			margin-top: 10px;
-			padding: 6px 12px;
-			font-size: 0.8rem;
-		}
-
 		.hero {
 			flex-direction: column;
 			align-items: center;
@@ -234,11 +200,6 @@ import hero from '../assets/hero.png';
 			font-size: 1rem;
 		}
 
-		button {
-			padding: 10px 20px;
-			font-size: 0.9rem;
-		}
-
 		.container {
 			padding: 0 10px;
 		}
@@ -247,10 +208,8 @@ import hero from '../assets/hero.png';
 
 <Layout>
 	<div class="top-bar">
-		<img src={logo.src} alt="Reely Logo" />
-		<button onclick="window.location.href='https://groups.google.com/g/reely-beta-testers'">
-			Request Early Access
-		</button>
+		<Image src={logo} alt="Reely Logo" width={126} height={126} loading="eager" />
+		<EarlyAccessButton client:load />
 	</div>
 	<div class="container">
 
@@ -259,36 +218,40 @@ import hero from '../assets/hero.png';
 				<h1>Reely</h1>
 				<div>
 					<p>
-						Reely is a mobile-first platform for asynchronous video conversations that's like Snapchat and TikTok had a baby. 
-						Imagine TikTok, but for having convos with your friends, fam, and whoever else you want to vibe with.
+						Reely is a phone app that lets you have video conversations using short, fun video messages, a bit like sending Snaps back and forth. Imagine being able to chat with your friends and family using short video replies, like a mix of Snapchat's video messages and TikTok's easy-to-use video format.
 					</p>
 				</div>
 			</div>
 			<div>
-				<p><img src={hero.src} alt="Reely Hero" /></p>
+				<p><Image src={hero} alt="Reely Hero" width={500} height={359} loading="eager" /></p>
 			</div>
 		</section>
 
-		<section>
+		<section class="early-access">
 			<h2>Early Access</h2>
 			<p>
 				Reely is currently in Early Access! Be one of the first to try it out by requesting to join our beta testing group.
 			</p>
 			<div>
-				<button onclick="window.location.href='https://groups.google.com/g/reely-beta-testers'">
-					<strong>Request Early Access</strong>
-				</button>
+				<EarlyAccessButton client:load />
 			</div>
 		</section>
 
-		<!-- <section>
-			<h2>Follow Us</h2>
-			<div class="social-buttons">
-				<button>Facebook</button>
-				<button>Twitter</button>
-				<button>Instagram</button>
-				<button>LinkedIn</button>
+		<section>
+			<h2>The Reely Experience</h2>
+			<p>
+				Discover the sounds of Reely! Dive into our curated album and experience the vibe that defines our platform.
+			</p>
+			<div style="text-align: center; margin-top: 20px;">
+				<iframe 
+					width="100%" 
+					height="300" 
+					allow="autoplay" 
+					title="The Reely Experience SoundCloud Player" 
+					loading="lazy" 
+					src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/reely-studios/sets/the-reely-experience&color=%23d75e91&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
+				</iframe>
 			</div>
-		</section> -->
+		</section>
 	</div>
 </Layout>
