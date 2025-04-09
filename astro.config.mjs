@@ -8,8 +8,9 @@ import react from '@astrojs/react';
 export default defineConfig({
   adapter: cloudflare({
     platformProxy: {
-      enabled: true
-    }
+      enabled: true,
+    },
   }),
   integrations: [react()],
+  output: 'static', // Ensure static output to avoid SSR issues
 });
