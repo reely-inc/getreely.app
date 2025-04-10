@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import logo from '../assets/logo-circle.png';
 import hero from '../assets/hero.png';
+import getReely from '../assets/get-reely-app.png';
 import { Image } from 'astro:assets';
 import EarlyAccessButton from '../components/EarlyAccessButton.jsx';
 ---
@@ -130,6 +131,11 @@ import EarlyAccessButton from '../components/EarlyAccessButton.jsx';
 		margin-top: 0px;
 	}
 
+	.container .early-access img {
+		max-width: 100%;
+		height: auto;
+	}
+
 	.container {
 		max-width: 1000px;
 		margin: 0 auto;
@@ -228,12 +234,14 @@ import EarlyAccessButton from '../components/EarlyAccessButton.jsx';
 		</section>
 
 		<section class="early-access">
-			<h2>Early Access</h2>
+			<h2>Early Bird Gets the Vibe!</h2>
 			<p>
-				Reely is currently in Early Access! Be one of the first to try it out by joining our beta testing Google group. A Google account is required to join the group.
+				Click the app store button below to download Reely and join our exclusive early access.
+				<br /><br />
+				<b>Don't wait for the hype -- experience it now!</b>
 			</p>
 			<div>
-				<EarlyAccessButton client:only="react" />
+				<EarlyAccessButton type="image" client:only="react" />
 			</div>
 		</section>
 
