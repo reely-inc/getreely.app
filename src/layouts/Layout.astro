@@ -1,5 +1,19 @@
 ---
 import hero from '../assets/hero.png';
+
+// Define interface for props
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+// Get props with defaults
+const { 
+  title = "Reely App - Asynchronous Video Conversations",
+  description = "Reely App is a mobile-first platform for asynchronous video conversations. Join our beta testing group and experience the future of video communication.",
+  image = hero.src
+} = Astro.props;
 ---
 <!doctype html>
 <html lang="en">

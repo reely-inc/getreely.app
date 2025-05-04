@@ -25,6 +25,11 @@ const { vid } = Astro.params; // Get the vid parameter from Astro
 // This ensures it works both during development and in production
 const initialVideoId = vid !== 'fallback' ? vid : '';
 
+// Generate thumbnail URL for meta tags
+const thumbnailUrl = initialVideoId 
+  ? `https://customer-4iy5eulg43mcpjtz.cloudflarestream.com/${initialVideoId}/thumbnails/thumbnail.jpg`
+  : undefined;
+
 // For debugging purposes only
 const requestUrl = Astro.request.url;
 const currentUrl = Astro.url;
@@ -34,6 +39,7 @@ console.log('Astro.request.url:', requestUrl);
 console.log('Astro.url:', currentUrl.toString());
 console.log('Astro.params:', Astro.params);
 console.log('Initial videoId:', initialVideoId);
+console.log('Thumbnail URL:', thumbnailUrl);
 console.log('--- End Debug ---');
 ---
 
