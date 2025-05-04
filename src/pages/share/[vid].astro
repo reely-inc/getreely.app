@@ -43,7 +43,11 @@ console.log('Thumbnail URL:', thumbnailUrl);
 console.log('--- End Debug ---');
 ---
 
-<Layout>
+<Layout 
+  title={initialVideoId ? `Watch this Reely video` : `Reely App - Asynchronous Video Conversations`}
+  description={initialVideoId ? `Check out this video on Reely, the mobile-first platform for asynchronous video conversations.` : `Reely App is a mobile-first platform for asynchronous video conversations. Join our beta testing group and experience the future of video communication.`}
+  image={thumbnailUrl || undefined}
+>
   <div class="container">
     <div class="top-bar">
       <Image src={logo} alt="Reely Logo" width={126} height={126} loading="eager" />
