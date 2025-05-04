@@ -54,56 +54,47 @@ console.log('--- End Debug ---');
     </section>
 
     <script>
-      // Client-side script to extract video ID from URL and load the video
+      // Client-side script remains largely the same
       document.addEventListener('DOMContentLoaded', () => {
-        // Extract video ID from the URL path
         const pathParts = window.location.pathname.split('/');
-        let videoId = pathParts[pathParts.length - 1]; // Last part of the path
-        
-        // If we're on the fallback page, we need to get the actual videoId from the URL
+        let videoId = pathParts[pathParts.length - 1];
         if (videoId === 'fallback') {
-          // We're on the fallback page, so get the actual videoId from the URL
           videoId = window.location.pathname.replace('/share/', '');
         }
-        
+
         const videoContainer = document.getElementById('video-player-container');
         const errorMessage = document.getElementById('error-message');
-        
+
         console.log('Client-side detected video ID:', videoId);
-        
-        // Check if we have a valid video ID and the container elements exist
-        if (videoId && videoId !== 'fallback' && videoId !== '') {
-          // Make sure videoContainer exists before using it
-          if (videoContainer) {
-            // Create and insert the iframe
-            const iframe = document.createElement('iframe');
-            iframe.src = `https://customer-4iy5eulg43mcpjtz.cloudflarestream.com/${videoId}/iframe`;
-            iframe.style.border = 'none';
-            iframe.height = '720';
-            iframe.width = '405';
-            iframe.allow = 'accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;';
-            iframe.allowFullscreen = true;
-            iframe.title = 'Reely Video';
-            
-            // Add the iframe to the container
-            videoContainer.innerHTML = '';
-            videoContainer.appendChild(iframe);
-            videoContainer.style.display = 'block';
-            
-            // Update the browser history to show the correct URL without reloading
-            if (window.location.pathname !== `/share/${videoId}`) {
-              window.history.replaceState({}, '', `/share/${videoId}`);
-            }
-          } else {
-            console.error('Video container element not found');
+
+        if (videoId && videoId !== 'fallback' && videoId !== '' && videoContainer) {
+          const iframe = document.createElement('iframe');
+          iframe.src = `https://customer-4iy5eulg43mcpjtz.cloudflarestream.com/${videoId}/iframe`;
+          iframe.style.border = 'none';
+          // --- Use standard iframe sizing within wrapper ---
+          iframe.style.position = 'absolute';
+          iframe.style.top = '0';
+          iframe.style.left = '0';
+          iframe.style.width = '100%';
+          iframe.style.height = '100%';
+          // --- Refined allow attribute ---
+          iframe.allow = "autoplay; encrypted-media; picture-in-picture;";
+          iframe.allowFullscreen = true;
+          iframe.title = 'Reely Video';
+
+          videoContainer.innerHTML = '';
+          videoContainer.appendChild(iframe);
+          videoContainer.style.display = 'block'; // Show the container
+
+          // Update history if needed
+          if (window.location.pathname !== `/share/${videoId}`) {
+            window.history.replaceState({}, '', `/share/${videoId}`);
           }
         } else {
-          // Show error message if no valid video ID
           if (errorMessage) {
-            errorMessage.style.display = 'block';
-          } else {
-            console.error('Error message element not found');
+            errorMessage.style.display = 'block'; // Show error
           }
+          if (!videoContainer) console.error('Video container element not found');
         }
       });
     </script>
