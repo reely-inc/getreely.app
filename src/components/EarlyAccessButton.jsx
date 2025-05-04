@@ -7,7 +7,7 @@ export default function EarlyAccessButton({ type = 'button' }) {
 	const redirectToStore = (platform) => {
 		if (platform === 'android') {
 			// Redirect to Google Play Store for Android
-			window.open('https://play.google.com/apps/testing/com.reelyinc.reely', '_blank');
+			window.open('https://play.google.com/store/apps/details?id=com.reelyinc.reely', '_blank');
 		} else if (platform === 'ios') {
 			// Redirect to TestFlight for iOS
 			window.open('https://testflight.apple.com/join/X9S3H8sk', '_blank');
@@ -20,7 +20,7 @@ export default function EarlyAccessButton({ type = 'button' }) {
 
 		if (/android/i.test(userAgent)) {
 			// Redirect to Google Play Store for Android
-			window.open('https://play.google.com/apps/testing/com.reelyinc.reely', '_blank');
+			window.open('https://play.google.com/store/apps/details?id=com.reelyinc.reely', '_blank');
 		} else if (/iPad|iPhone|iPod/.test(userAgent) && typeof window.MSStream === 'undefined') {
 			// Redirect to TestFlight for iOS
 			window.open('https://testflight.apple.com/join/X9S3H8sk', '_blank');
