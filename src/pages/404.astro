@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <script>
+    // This script will run on the client side
+    document.addEventListener('DOMContentLoaded', () => {
+      const path = window.location.pathname;
+      
+      // Check if this is a share URL
+      if (path.startsWith('/share/')) {
+        // Redirect to the fallback page while preserving the URL
+        window.location.href = '/share/fallback';
+      }
+    });
+  </script>
+  
+  <div class="container">
+    <h1>Page Not Found</h1>
+    <p>Redirecting you to the appropriate page...</p>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    padding: 0 20px;
+  }
+  
+  h1 {
+    color: #f9c07d;
+    margin-bottom: 20px;
+  }
+</style>

@@ -1,0 +1,2 @@
+# Handle all share URLs with our fallback page
+/share/* /share/fallback 200

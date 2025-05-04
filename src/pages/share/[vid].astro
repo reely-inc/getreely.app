@@ -1,0 +1,243 @@
+---
+import Layout from '../../layouts/Layout.astro'; // Adjust path if needed
+import logo from '../../assets/logo-circle.png'; // Adjust path if needed
+import getReely from '../../assets/get-reely-app.png'; // Adjust path if needed
+import { Image } from 'astro:assets';
+import EarlyAccessButton from '../../components/EarlyAccessButton.jsx'; // Adjust path if needed
+
+// Required for dynamic routes in Astro
+export async function getStaticPaths() {
+  // For Cloudflare Pages static deployment, we need to handle dynamic routes
+  // We'll use a fallback approach that creates a generic template
+  // that will work with client-side JavaScript to extract the video ID
+  
+  return [
+    // Add a generic fallback that will be used for client-side routing
+    { params: { vid: 'fallback' } },
+  ];
+}
+
+// --- Get parameter from dynamic route ---
+// For static builds, we need to handle both build-time and client-side paths
+const { vid } = Astro.params; // Get the vid parameter from Astro
+
+// We'll use this as a fallback, but the actual videoId will be determined client-side
+// This ensures it works both during development and in production
+const initialVideoId = vid !== 'fallback' ? vid : '';
+
+// For debugging purposes only
+const requestUrl = Astro.request.url;
+const currentUrl = Astro.url;
+
+console.log('--- Astro URL/Params Debug ---');
+console.log('Astro.request.url:', requestUrl);
+console.log('Astro.url:', currentUrl.toString());
+console.log('Astro.params:', Astro.params);
+console.log('Initial videoId:', initialVideoId);
+console.log('--- End Debug ---');
+---
+
+<Layout>
+  <div class="container">
+    <div class="top-bar">
+      <Image src={logo} alt="Reely Logo" width={126} height={126} loading="eager" />
+    </div>
+
+    <section class="video-container">
+      <div id="video-player-container" class="video-wrapper" style="display: none;">
+        <!-- The iframe will be inserted here by client-side JavaScript -->
+      </div>
+      <div id="error-message" class="error-message" style="display: none;">
+        <p>No video ID found in the URL path.</p>
+        <p class="debug-info">Please check the URL format: /share/YOUR_VIDEO_ID</p>
+      </div>
+    </section>
+
+    <script>
+      // Client-side script to extract video ID from URL and load the video
+      document.addEventListener('DOMContentLoaded', () => {
+        // Extract video ID from the URL path
+        const pathParts = window.location.pathname.split('/');
+        let videoId = pathParts[pathParts.length - 1]; // Last part of the path
+        
+        // If we're on the fallback page, we need to get the actual videoId from the URL
+        if (videoId === 'fallback') {
+          // We're on the fallback page, so get the actual videoId from the URL
+          videoId = window.location.pathname.replace('/share/', '');
+        }
+        
+        const videoContainer = document.getElementById('video-player-container');
+        const errorMessage = document.getElementById('error-message');
+        
+        console.log('Client-side detected video ID:', videoId);
+        
+        // Check if we have a valid video ID and the container elements exist
+        if (videoId && videoId !== 'fallback' && videoId !== '') {
+          // Make sure videoContainer exists before using it
+          if (videoContainer) {
+            // Create and insert the iframe
+            const iframe = document.createElement('iframe');
+            iframe.src = `https://customer-4iy5eulg43mcpjtz.cloudflarestream.com/${videoId}/iframe`;
+            iframe.style.border = 'none';
+            iframe.height = '720';
+            iframe.width = '405';
+            iframe.allow = 'accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;';
+            iframe.allowFullscreen = true;
+            iframe.title = 'Reely Video';
+            
+            // Add the iframe to the container
+            videoContainer.innerHTML = '';
+            videoContainer.appendChild(iframe);
+            videoContainer.style.display = 'block';
+            
+            // Update the browser history to show the correct URL without reloading
+            if (window.location.pathname !== `/share/${videoId}`) {
+              window.history.replaceState({}, '', `/share/${videoId}`);
+            }
+          } else {
+            console.error('Video container element not found');
+          }
+        } else {
+          // Show error message if no valid video ID
+          if (errorMessage) {
+            errorMessage.style.display = 'block';
+          } else {
+            console.error('Error message element not found');
+          }
+        }
+      });
+    </script>
+
+    <section class="join-vibe">
+      <h1>Got something to say?</h1>
+      <p>
+        This conversation is waiting for your voice! Download Reely now to reply with your own video and keep the Vibe going.
+      </p>
+      <div class="download-button">
+        <EarlyAccessButton type="image" client:only="react" />
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  body {
+    background-color: #060a13;
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .top-bar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    margin-bottom: 20px;
+  }
+
+  .video-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+
+  .video-wrapper {
+    /* 9:16 aspect ratio container */
+    width: 405px;
+    height: 720px;
+    max-height: 80vh;
+    max-width: 100%;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+  }
+
+  .video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .error-message {
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .debug-info {
+    font-size: 0.8rem;
+    color: #999;
+    margin-top: 10px;
+  }
+
+  .join-vibe {
+    text-align: center;
+    margin-top: 20px;
+    padding: 20px;
+    max-width: 600px;
+  }
+
+  h1 {
+    color: #f9c07d;
+    margin-bottom: 20px;
+    font-size: 2rem;
+  }
+
+  p {
+    line-height: 1.8;
+    font-size: 1.1rem;
+    margin: 10px 0 30px 0;
+  }
+
+  .download-button {
+    margin-top: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .video-wrapper {
+      width: 270px;
+      height: 480px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .container {
+      padding: 10px;
+    }
+
+    .video-wrapper {
+      width: 225px;
+      height: 400px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+  }
+</style>
