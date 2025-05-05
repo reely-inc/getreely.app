@@ -4,37 +4,53 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout>
   <script>
-    // This script will run on the client side
+    // Redirect all 404s to https://getreely.app
     document.addEventListener('DOMContentLoaded', () => {
-      const path = window.location.pathname;
-      
-      // Check if this is a share URL
-      if (path.startsWith('/share/')) {
-        // Redirect to the fallback page while preserving the URL
-        window.location.href = '/share/fallback';
-      }
+      window.location.href = 'https://getreely.app';
     });
   </script>
-  
-  <div class="container">
-    <h1>Page Not Found</h1>
-    <p>Redirecting you to the appropriate page...</p>
-  </div>
+  <noscript>
+    <div class="container">
+      <h1>Page Not Found</h1>
+      <p>If you are not redirected, <a href="https://getreely.app">click here</a>.</p>
+    </div>
+    <meta http-equiv="refresh" content="0;url=https://getreely.app" />
+  </noscript>
 </Layout>
 
 <style>
+  body {
+    background-color: #060a13;
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
   .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    height: 100vh;
+    min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
     text-align: center;
-    padding: 0 20px;
+    align-items: center;
   }
-  
   h1 {
     color: #f9c07d;
     margin-bottom: 20px;
+  }
+  a {
+    color: #f9c07d;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+  a:hover {
+    text-decoration: underline;
   }
 </style>
