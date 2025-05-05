@@ -21,14 +21,26 @@ export async function getStaticPaths() {
 // For static builds, we need to handle both build-time and client-side paths
 const { vid } = Astro.params; // Get the vid parameter from Astro
 
+// Extract video ID from URL path if possible
+let extractedVideoId = '';
+if (Astro.url && Astro.url.pathname) {
+  const pathMatch = Astro.url.pathname.match(/\/share\/([^\/]+)/);
+  if (pathMatch && pathMatch[1] && pathMatch[1] !== 'fallback') {
+    extractedVideoId = pathMatch[1];
+  }
+}
+
 // We'll use this as a fallback, but the actual videoId will be determined client-side
 // This ensures it works both during development and in production
-const initialVideoId = vid !== 'fallback' ? vid : '';
+const initialVideoId = extractedVideoId || (vid !== 'fallback' ? vid : '');
 
 // Generate thumbnail URL for meta tags
 const thumbnailUrl = initialVideoId 
   ? `https://customer-4iy5eulg43mcpjtz.cloudflarestream.com/${initialVideoId}/thumbnails/thumbnail.jpg`
   : undefined;
+
+// Ensure the thumbnail URL is absolute for meta tags
+const absoluteThumbnailUrl = thumbnailUrl ? new URL(thumbnailUrl).toString() : undefined;
 
 // For debugging purposes only
 const requestUrl = Astro.request.url;
@@ -40,13 +52,14 @@ console.log('Astro.url:', currentUrl.toString());
 console.log('Astro.params:', Astro.params);
 console.log('Initial videoId:', initialVideoId);
 console.log('Thumbnail URL:', thumbnailUrl);
+console.log('Absolute Thumbnail URL:', absoluteThumbnailUrl);
 console.log('--- End Debug ---');
 ---
 
 <Layout 
   title={initialVideoId ? `Watch this Reely video` : `Reely App - Async Video Chat`}
   description={initialVideoId ? `Check out this video on Reely, the mobile-first platform for async video chat.` : `Reely App is a mobile-first platform for async video chat. Download Reely App today and experience the future of video communication.`}
-  image={thumbnailUrl}
+  image={absoluteThumbnailUrl}
 >
   <div class="container">
     <div class="top-bar">

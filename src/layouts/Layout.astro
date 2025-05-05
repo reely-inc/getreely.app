@@ -14,6 +14,15 @@ const {
   description = "Reely App is a mobile-first platform for async video chat. Download Reely App today and experience the future of video communication.",
   image = hero.src
 } = Astro.props;
+
+// Ensure image URL is absolute
+const imageUrl = image ? (image.startsWith('http') ? image : new URL(image, Astro.url).toString()) : hero.src;
+
+// Debug log for image URLs
+console.log('Layout Component - Image Props:', { 
+  originalImage: image, 
+  processedImageUrl: imageUrl 
+});
 ---
 <!doctype html>
 <html lang="en">
@@ -28,12 +37,12 @@ const {
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta property="og:title" content={title}>
 		<meta property="og:description" content={description}>
-		<meta property="og:image" content={image}>
+		<meta property="og:image" content={imageUrl}>
 		<meta property="og:url" content="https://getreely.app">
 		<meta name="twitter:card" content="summary_large_image">
 		<meta name="twitter:title" content={title}>
 		<meta name="twitter:description" content={description}>
-		<meta name="twitter:image" content={image}>
+		<meta name="twitter:image" content={imageUrl}>
 		<title>{title}</title>
 	</head>
 	<body>
