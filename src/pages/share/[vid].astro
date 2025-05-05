@@ -7,46 +7,38 @@ import EarlyAccessButton from '../../components/EarlyAccessButton.jsx'; // Adjus
 
 // Required for dynamic routes in Astro
 export async function getStaticPaths() {
-  // For Cloudflare Pages static deployment, we need to handle dynamic routes
-  // We'll use a fallback approach that creates a generic template
-  // that will work with client-side JavaScript to extract the video ID
-  
-  return [
-    // Add a generic fallback that will be used for client-side routing
-    { params: { vid: 'fallback' } },
-  ];
+  // Generic fallback for client-side routing or dynamic paths
+  return [{ params: { vid: 'fallback' } }];
 }
 
-// --- Get parameter from dynamic route ---
-// For static builds, we need to handle both build-time and client-side paths
-const { vid } = Astro.params; // Get the vid parameter from Astro
-
-// Extract video ID from URL path if possible
-let videoId = '';
-if (Astro.url && Astro.url.pathname) {
+// --- Frontmatter (Best effort for initial render/SEO) ---
+const { vid } = Astro.params;
+let initialVideoId = ''; // Use a different name to avoid conflict with client-side var
+// Try extracting from pathname FIRST (might work in SSR/some adapters)
+if (Astro.url?.pathname) {
   const pathMatch = Astro.url.pathname.match(/\/share\/([^\/\.]+)/);
   if (pathMatch && pathMatch[1] && pathMatch[1] !== 'fallback') {
-    videoId = pathMatch[1];
-  } else if (vid && vid !== 'fallback') {
-    videoId = vid;
+    initialVideoId = pathMatch[1];
   }
 }
+// Fallback to param if path didn't yield ID (e.g., during static build)
+if (!initialVideoId && vid && vid !== 'fallback') {
+  initialVideoId = vid;
+}
 
-// Generate thumbnail URL for meta tags
-const thumbnailUrl = videoId 
-  ? `https://customer-4iy5eulg43mcpjtz.cloudflarestream.com/${videoId}/thumbnails/thumbnail.jpg`
-  : undefined;
+// Generate initial thumbnail URL (might be undefined)
+const initialThumbnailUrl = initialVideoId
+  ? `https://customer-4iy5eulg43mcpjtz.cloudflarestream.com/${initialVideoId}/thumbnails/thumbnail.jpg`
+  : undefined; // Default to undefined if no ID found server-side
 
-// For debugging
-console.log('Video ID:', videoId);
-console.log('Thumbnail URL:', thumbnailUrl);
+console.log('Frontmatter initialVideoId:', initialVideoId);
+console.log('Frontmatter initialThumbnailUrl:', initialThumbnailUrl);
 ---
 
-<Layout 
-  title={videoId ? `Watch this Reely video` : `Reely App - Async Video Chat`}
-  description={videoId ? `Check out this video on Reely, the mobile-first platform for async video chat.` : `Reely App is a mobile-first platform for async video chat. Download Reely App today and experience the future of video communication.`}
-  image={thumbnailUrl}
->
+<Layout
+  title={initialVideoId ? `Watch this Reely video` : `Reely App - Async Video Chat`}
+  description={initialVideoId ? `Check out this video on Reely...` : `Reely App is...`}
+image={initialThumbnailUrl} > {/* Pass initial (potentially undefined) URL */}
   <div class="container">
     <div class="top-bar">
       <Image src={logo} alt="Reely Logo" width={126} height={126} loading="eager" />
@@ -54,7 +46,7 @@ console.log('Thumbnail URL:', thumbnailUrl);
 
     <section class="video-container">
       <div id="video-player-container" class="video-wrapper" style="display: none;">
-        <!-- The iframe will be inserted here by client-side JavaScript -->
+        {/* Iframe inserted by script */}
       </div>
       <div id="error-message" class="error-message" style="display: none;">
         <p>No video ID found in the URL path.</p>
@@ -64,48 +56,79 @@ console.log('Thumbnail URL:', thumbnailUrl);
 
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        // Extract video ID from URL path
-        const pathMatch = window.location.pathname.match(/\/share\/([^\/\.]+)/);
-        let videoId = pathMatch && pathMatch[1] ? pathMatch[1] : '';
-        
-        // Clean up the video ID
-        if (videoId.includes('.')) {
-          videoId = videoId.split('.')[0];
+        const pathParts = window.location.pathname.split('/');
+        // Get the last part, handle potential trailing slash
+        let videoId = pathParts.pop() || pathParts.pop(); // Handles trailing slash
+
+        // Basic validation/cleanup
+        if (!videoId || videoId === 'share' || videoId === 'fallback') {
+            videoId = ''; // Reset if invalid ID extracted
+        } else {
+            // Remove potential file extensions like .html if present
+             videoId = videoId.split('.')[0];
         }
-        
-        console.log('Client-side video ID:', videoId);
+
+        console.log('Client-side extracted video ID:', videoId);
 
         const videoContainer = document.getElementById('video-player-container');
         const errorMessage = document.getElementById('error-message');
-        
-        if (videoId && videoId !== 'fallback' && videoId !== '' && videoContainer) {
+
+        if (videoId && videoContainer) {
+          // --- VIDEO IFRAME SETUP ---
           const iframe = document.createElement('iframe');
           iframe.src = `https://customer-4iy5eulg43mcpjtz.cloudflarestream.com/${videoId}/iframe`;
           iframe.style.border = 'none';
-          // --- Use standard iframe sizing within wrapper ---
           iframe.style.position = 'absolute';
           iframe.style.top = '0';
           iframe.style.left = '0';
           iframe.style.width = '100%';
           iframe.style.height = '100%';
-          // --- Refined allow attribute ---
           iframe.allow = "autoplay; encrypted-media; picture-in-picture;";
           iframe.allowFullscreen = true;
           iframe.title = 'Reely Video';
 
           videoContainer.innerHTML = '';
           videoContainer.appendChild(iframe);
-          videoContainer.style.display = 'block'; // Show the container
+          videoContainer.style.display = 'block';
 
-          // Update history if needed
-          if (window.location.pathname !== `/share/${videoId}`) {
-            window.history.replaceState({}, '', `/share/${videoId}`);
+          // --- META TAG UPDATE ---
+          // Construct the correct thumbnail URL client-side
+          const thumbnailUrl = `https://customer-4iy5eulg43mcpjtz.cloudflarestream.com/${videoId}/thumbnails/thumbnail.jpg`;
+          console.log('Client-side setting og:image to:', thumbnailUrl);
+
+          // Find the og:image meta tag (usually added by Layout.astro)
+          let ogImageTag = document.querySelector('meta[property="og:image"]');
+          if (!ogImageTag) {
+             // If it doesn't exist, create it (less ideal, Layout should add it)
+             ogImageTag = document.createElement('meta');
+             ogImageTag.setAttribute('property', 'og:image');
+             document.head.appendChild(ogImageTag);
+             console.log('Client-side created og:image tag.');
           }
+          // Update the content attribute
+          ogImageTag.setAttribute('content', thumbnailUrl);
+
+          // Also update twitter:image if present
+           let twitterImageTag = document.querySelector('meta[name="twitter:image"]');
+           if (twitterImageTag) {
+               twitterImageTag.setAttribute('content', thumbnailUrl);
+               console.log('Client-side updated twitter:image tag.');
+           }
+           // --- END META TAG UPDATE ---
+
+
+          // Update history if needed (optional)
+          // if (window.location.pathname !== `/share/${videoId}`) {
+          //   window.history.replaceState({}, '', `/share/${videoId}`);
+          // }
+
         } else {
+          // Show error if no valid videoId found client-side
           if (errorMessage) {
-            errorMessage.style.display = 'block'; // Show error
+            errorMessage.style.display = 'block';
           }
           if (!videoContainer) console.error('Video container element not found');
+          console.error('Client-side: No valid video ID found in path:', window.location.pathname);
         }
       });
     </script>

@@ -4,6 +4,9 @@ import react from '@astrojs/react';
 
 // https://astro.build/config
 export default defineConfig({
+  // Set the production site URL for proper asset resolution
+  site: 'https://getreely.app',
+  
   output: 'static', // Ensure static output to avoid SSR issues
   integrations: [react()],
   

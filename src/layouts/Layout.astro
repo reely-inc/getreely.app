@@ -16,12 +16,33 @@ const {
 } = Astro.props;
 
 // Ensure image URL is absolute
-const imageUrl = image ? (image.startsWith('http') ? image : new URL(image, Astro.url).toString()) : hero.src;
+let imageUrl;
+if (image) {
+  if (image.startsWith('http')) {
+    // Already an absolute URL
+    imageUrl = image;
+  } else if (image.startsWith('/')) {
+    // Relative to site root
+    imageUrl = import.meta.env.SITE 
+      ? new URL(image, import.meta.env.SITE).toString() 
+      : image;
+  } else {
+    // Relative path (like from assets)
+    // For imported assets like hero.src, we don't need to modify the URL
+    // as Astro's build process will handle this correctly
+    imageUrl = image;
+  }
+} else {
+  // For the default hero image, we don't need to modify the URL
+  // as Astro's build process will handle this correctly
+  imageUrl = hero.src;
+}
 
 // Debug log for image URLs
 console.log('Layout Component - Image Props:', { 
   originalImage: image, 
-  processedImageUrl: imageUrl 
+  processedImageUrl: imageUrl,
+  site: import.meta.env.SITE || 'Not defined'
 });
 ---
 <!doctype html>
