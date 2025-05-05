@@ -22,44 +22,30 @@ export async function getStaticPaths() {
 const { vid } = Astro.params; // Get the vid parameter from Astro
 
 // Extract video ID from URL path if possible
-let extractedVideoId = '';
+let videoId = '';
 if (Astro.url && Astro.url.pathname) {
-  const pathMatch = Astro.url.pathname.match(/\/share\/([^\/]+)/);
+  const pathMatch = Astro.url.pathname.match(/\/share\/([^\/\.]+)/);
   if (pathMatch && pathMatch[1] && pathMatch[1] !== 'fallback') {
-    extractedVideoId = pathMatch[1];
+    videoId = pathMatch[1];
+  } else if (vid && vid !== 'fallback') {
+    videoId = vid;
   }
 }
 
-// We'll use this as a fallback, but the actual videoId will be determined client-side
-// This ensures it works both during development and in production
-const initialVideoId = extractedVideoId || (vid !== 'fallback' ? vid : '');
-
 // Generate thumbnail URL for meta tags
-const thumbnailUrl = initialVideoId 
-  ? `https://customer-4iy5eulg43mcpjtz.cloudflarestream.com/${initialVideoId}/thumbnails/thumbnail.jpg`
+const thumbnailUrl = videoId 
+  ? `https://customer-4iy5eulg43mcpjtz.cloudflarestream.com/${videoId}/thumbnails/thumbnail.jpg`
   : undefined;
 
-// Ensure the thumbnail URL is absolute for meta tags
-const absoluteThumbnailUrl = thumbnailUrl ? new URL(thumbnailUrl).toString() : undefined;
-
-// For debugging purposes only
-const requestUrl = Astro.request.url;
-const currentUrl = Astro.url;
-
-console.log('--- Astro URL/Params Debug ---');
-console.log('Astro.request.url:', requestUrl);
-console.log('Astro.url:', currentUrl.toString());
-console.log('Astro.params:', Astro.params);
-console.log('Initial videoId:', initialVideoId);
+// For debugging
+console.log('Video ID:', videoId);
 console.log('Thumbnail URL:', thumbnailUrl);
-console.log('Absolute Thumbnail URL:', absoluteThumbnailUrl);
-console.log('--- End Debug ---');
 ---
 
 <Layout 
-  title={initialVideoId ? `Watch this Reely video` : `Reely App - Async Video Chat`}
-  description={initialVideoId ? `Check out this video on Reely, the mobile-first platform for async video chat.` : `Reely App is a mobile-first platform for async video chat. Download Reely App today and experience the future of video communication.`}
-  image={absoluteThumbnailUrl}
+  title={videoId ? `Watch this Reely video` : `Reely App - Async Video Chat`}
+  description={videoId ? `Check out this video on Reely, the mobile-first platform for async video chat.` : `Reely App is a mobile-first platform for async video chat. Download Reely App today and experience the future of video communication.`}
+  image={thumbnailUrl}
 >
   <div class="container">
     <div class="top-bar">
@@ -77,19 +63,21 @@ console.log('--- End Debug ---');
     </section>
 
     <script>
-      // Client-side script remains largely the same
       document.addEventListener('DOMContentLoaded', () => {
-        const pathParts = window.location.pathname.split('/');
-        let videoId = pathParts[pathParts.length - 1];
-        if (videoId === 'fallback') {
-          videoId = window.location.pathname.replace('/share/', '');
+        // Extract video ID from URL path
+        const pathMatch = window.location.pathname.match(/\/share\/([^\/\.]+)/);
+        let videoId = pathMatch && pathMatch[1] ? pathMatch[1] : '';
+        
+        // Clean up the video ID
+        if (videoId.includes('.')) {
+          videoId = videoId.split('.')[0];
         }
+        
+        console.log('Client-side video ID:', videoId);
 
         const videoContainer = document.getElementById('video-player-container');
         const errorMessage = document.getElementById('error-message');
-
-        console.log('Client-side detected video ID:', videoId);
-
+        
         if (videoId && videoId !== 'fallback' && videoId !== '' && videoContainer) {
           const iframe = document.createElement('iframe');
           iframe.src = `https://customer-4iy5eulg43mcpjtz.cloudflarestream.com/${videoId}/iframe`;
