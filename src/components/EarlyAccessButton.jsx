@@ -10,7 +10,7 @@ export default function EarlyAccessButton({ type = 'button' }) {
 			window.open('https://play.google.com/store/apps/details?id=com.reelyinc.reely', '_blank');
 		} else if (platform === 'ios') {
 			// Redirect to TestFlight for iOS
-			window.open('https://testflight.apple.com/join/X9S3H8sk', '_blank');
+			window.open('https://apps.apple.com/us/app/reely-async-video-chat/id6743874789', '_blank');
 		}
 		setShowPlatformDialog(false);
 	};
@@ -23,7 +23,7 @@ export default function EarlyAccessButton({ type = 'button' }) {
 			window.open('https://play.google.com/store/apps/details?id=com.reelyinc.reely', '_blank');
 		} else if (/iPad|iPhone|iPod/.test(userAgent) && typeof window.MSStream === 'undefined') {
 			// Redirect to TestFlight for iOS
-			window.open('https://testflight.apple.com/join/X9S3H8sk', '_blank');
+			window.open('https://apps.apple.com/us/app/reely-async-video-chat/id6743874789', '_blank');
 		} else {
 			// Show platform selection dialog
 			setShowPlatformDialog(true);
@@ -139,7 +139,7 @@ export default function EarlyAccessButton({ type = 'button' }) {
 				onMouseOver={(e) => (e.target.style.backgroundColor = '#f9c07d')}
 				onMouseOut={(e) => (e.target.style.backgroundColor = '#d75e91')}
 			>
-				Get Early Access Now!
+				Get Reely Now!
 			</button>
 			{showPlatformDialog && <PlatformDialog />}
 		</>
